@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fall Detection</title>
+  <script>let num = prompt("What is your phone number for alerts?");let opt = prompt("Would you like to be alerted when your kid falls?");</script>
+  <link href="style.css" rel="stylesheet" type="text/css" />
+  <div class="topnav">
+    <a href="tracking.html">Tracking</a>
+    <a href="fall.html">Monitor Falling</a>
+    <a href="statistics.html">Statistics</a></br>
+  </div>
+  <style>
+    .highlight{
+      background-color: #04AA6D;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <script>
+    // Vonage API credentials
+    const apiKey = '4c6acc1e';
+    const apiSecret = 'fvef9Dn4cwcZVGMs';
+
+    // Message details
+    const from = '15743255292'; // Should be a Vonage virtual number you've purchased
+    const to = '12035712738';
+    const text = 'Your kid has fallen. Their location has now been pinned on the tracking map.';
+
+    // Boolean variable
+    let x = false;
+
+    // Function to periodically check if x is true and send SMS message
+    function sendTextMessage() {
+        if (x) {
+          function greeting(phrase,name) {
+            alert(`${phrase}. ${name}` );
+            window.alert(`${phrase}. ${name}` );
+          }
+          setTimeout(greeting, 3000,"Your kid has fallen","Their location has now been pinned on the tracking map.");
+            fetch('https://rest.nexmo.com/sms/json', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Basic ${btoa(`${apiKey}:${apiSecret}`)}`
+                },
+                body: JSON.stringify({
+                    from: { type: 'sms', number: from },
+                    to: { type: 'sms', number: to },
+                    text: text
+                })
+            })
+            .then(response => response.json())
+            .then(data => console.log(data))
+            .catch(error => console.error('Error:', error));
+        }
+    }
+
+    // Set x to true (simulate some condition)
+    x = true;
+
+    // Check if x is true and send text message every 5 seconds (5000 milliseconds)
+    setInterval(sendTextMessage, 5000);
+
+  </script>
+</body>
+</html>
