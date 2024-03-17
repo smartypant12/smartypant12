@@ -17,53 +17,40 @@
       color: white;
     }
   </style>
+  <script src="https://sdk.amazonaws.com/js/aws-sdk-2.954.0.min.js"></script>
 </head>
 <body>
-  <script>
-    // Vonage API credentials
-    const apiKey = '4c6acc1e';
-    const apiSecret = 'fvef9Dn4cwcZVGMs';
 
-    // Message details
-    const from = '15743255292'; // Should be a Vonage virtual number you've purchased
-    const to = '12035712738';
-    const text = 'Your kid has fallen. Their location has now been pinned on the tracking map.';
+  <script src="https://sdk.amazonaws.com/js/aws-sdk-2.954.0.min.js"></script>
 
-    // Boolean variable
-    let x = false;
+<script>
+    AWS.config.update({
+        region: 'us-east-1',
+        accessKeyId: 'AKIAVRUVWP5PW24DLHA6',
+        secretAccessKey: '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'
+    });
 
-    // Function to periodically check if x is true and send SMS message
-    function sendTextMessage() {
-        if (x) {
-          function greeting(phrase,name) {
-            alert(`${phrase}. ${name}` );
-            window.alert(`${phrase}. ${name}` );
-          }
-          setTimeout(greeting, 3000,"Your kid has fallen","Their location has now been pinned on the tracking map.");
-            fetch('https://rest.nexmo.com/sms/json', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Basic ${btoa(`${apiKey}:${apiSecret}`)}`
-                },
-                body: JSON.stringify({
-                    from: { type: 'sms', number: from },
-                    to: { type: 'sms', number: to },
-                    text: text
-                })
-            })
-            .then(response => response.json())
-            .then(data => console.log(data))
-            .catch(error => console.error('Error:', error));
-        }
+    var sns = new AWS.SNS();
+
+    function sendSMS() {
+        var params = {
+            Message: 'Your kid has fallen. Their location has now been pinned on the tracking map.',
+            TopicArn: 'arn:aws:sns:us-east-1:381492297567:SmartyPant'
+        };
+
+        sns.publish(params, function(err, data) {
+            if (err) {
+                console.error('Error publishing message:', err);
+            } else {
+                console.log('Message published successfully:', data.MessageId);
+                alert('Message sent successfully!');
+            }
+        });
     }
+</script>
 
-    // Set x to true (simulate some condition)
-    x = true;
+<!-- Button to trigger message sending -->
+<button onclick="sendSMS()"></button>
 
-    // Check if x is true and send text message every 5 seconds (5000 milliseconds)
-    setInterval(sendTextMessage, 5000);
-
-  </script>
 </body>
 </html>
